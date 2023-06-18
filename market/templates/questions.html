@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title> Questions </title>
+{% endblock %}
+
+
+{% block body %}
+    <div class="container">
+        <h1>Question page</h1>
+    </div>
+
+
+    <div class="container">
+        <form method="POST">
+         <select class="form-select" name="topic_id" id="topic_id">
+            <option selected value="all">VŠE</option>
+            {% for topic in topics %}
+                <option value="{{ topic.id }}">{{ topic.topic }}</option>
+            {% endfor %}
+         </select>
+        <input type="submit" value="choose">
+        </form>
+
+    <div class="card-container" style="display: flex; flex-wrap: wrap;">
+       {% for question in questions %}
+         <div class="card" style="width: 300px; margin: 10px;">
+          <img class="card-img-top" src="..." alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title"> {{ question.question }}</h5>
+                <p class="card-text">{{ question.answer | safe }}</p>
+                <a href="#" class="btn btn-primary">{{ question.topic }}</a>
+              </div>
+         </div>
+          {% endfor %}
+        </div>
+    </div>
+
+
+{% endblock body %}

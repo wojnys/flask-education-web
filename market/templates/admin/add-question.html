@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title> Create question </title>
+{% endblock %}
+
+
+{% block body %}
+    <div class="container">
+        <h1>Create Question</h1>
+        <form method="post">
+             {{ form.question.label }}
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                  {{ form.question(class="form-control", placeholder="Question...", id="question") }}
+                </div>
+            </div>
+
+              {{ form.points.label }}
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                  {{ form.points(class="form-control", placeholder="Points...", id="points") }}
+                </div>
+            </div>
+
+              {{ form.topic.label }}
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                  {{ form.topic(class="form-control", placeholder="Topic...", id="topic") }}
+                </div>
+            </div>
+
+             {{ form.answer.label }}
+            {{ form.answer(class='ckeditor') }}
+            <input type="submit">
+        </form>
+
+    </div>
+
+{% endblock body %}

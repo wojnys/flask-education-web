@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title> Create topic </title>
+{% endblock %}
+
+
+{% block body %}
+    <div class="container">
+        <h1>Create Topic</h1>
+        <form method="post">
+              {{ form.topic.label }}
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                  {{ form.topic(class="form-control", placeholder="Topic...", id="topic") }}
+                </div>
+            </div>
+            <input type="submit">
+        </form>
+
+    </div>
+
+{% endblock body %}

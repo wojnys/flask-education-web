@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Register</title>
+{% endblock %}
+
+ {% block body %}
+     <h1>Login Form</h1>
+     <div class="container">
+        <p id="availability"></p>
+        <form method="POST" class="form-register">
+            {{ form.hidden_tag() }}
+             {{ form.username.label }}
+            <div class="form-row">
+                <div class="form-group col-md-11">
+                  {{ form.username(class="check-input-data form-control", placeholder="Username...", id="username") }}
+                </div>
+                <div class="form-group col-md-0">
+                  <span class="input-icon input-icon-username"></span>
+                </div>
+            </div>
+
+            {{ form.password.label }}
+            <div class="form-row">
+                <div class="form-group col-md-11">
+                  {{ form.password(class="check-input-data form-control", placeholder="Email...", id="email") }}
+                </div>
+                <div class="form-group col-md-0">
+                  <span class="input-icon input-icon-email"></span>
+                </div>
+            </div>
+
+            {{ form.submit(class="btn btn-bg btn-block btn-primary my-2 col-md-11") }}
+
+        </form>
+     </div>
+
+
+
+ {% endblock %}

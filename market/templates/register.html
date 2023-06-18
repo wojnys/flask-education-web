@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Register</title>
+{% endblock %}
+
+ {% block body %}
+<style>
+span {
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    padding:0px 2px;
+    height: 100%;
+}
+.div-available {
+    border:1px solid limegreen;
+    box-shadow: 0px 0px 2px green;
+}
+.div-nonavailable {
+    border:1px solid red;
+    box-shadow: 0px 0px 2px red;
+}
+</style>
+     <h1>Register Form</h1>
+     <div class="container">
+        <p id="availability"></p>
+        <form method="POST" class="form-register">
+            {{ form.hidden_tag() }}
+             {{ form.username.label }}
+            <div class="form-row">
+                <div class="form-group col-md-11">
+                  {{ form.username(class="check-input-data form-control", placeholder="Username...", id="username") }}
+                </div>
+                <div class="form-group col-md-0">
+                  <span class="input-icon input-icon-username"></span>
+                </div>
+            </div>
+
+            {{ form.email.label }}
+            <div class="form-row">
+                <div class="form-group col-md-11">
+                  {{ form.email(class="check-input-data form-control", placeholder="Email...", id="email") }}
+                </div>
+                <div class="form-group col-md-0">
+                  <span class="input-icon input-icon-email"></span>
+                </div>
+            </div>
+
+              {{ form.password1.label }}
+            <div class="form-row">
+                <div class="form-group col-md-11">
+                  {{ form.password1(class="check-input-data form-control", placeholder="Password...", id="password1") }}
+                </div>
+                <div class="form-group col-md-0">
+                  <span class="input-icon input-icon-password1"></span>
+                </div>
+            </div>
+
+            {{ form.password2.label }}
+            <p class="text-danger m-0" id="pwd-message"></p>
+            <div class="form-row">
+                <div class="form-group col-md-11">
+                  {{ form.password2(class="form-control", placeholder="Confirm password...", id="password2") }}
+                </div>
+                <div class="form-group col-md-0">
+                  <span class="input-icon input-icon-password2"></span>
+                </div>
+            </div>
+
+
+
+            {{ form.submit(class="btn btn-bg btn-block btn-primary my-2 col-md-11") }}
+
+        </form>
+     </div>
+
+     <script>
+        $(document).ready(function() {
+            // Bind an event handler to the input field
+            $('.form-control').on('input', function() {
+                let inputId = $(this).attr('id')
+                let value = $(this).val();
+
+                if(inputId!="password2") {
+                    // Send an AJAX request to the Flask server
+                    $.post('/check_correctness_of_value', {'inputName': inputId, 'input-value': value}, function(response) {
+                        if (response.available) {
+                            $(`.input-icon-${inputId}`).html('<i class="fa fa-check-circle" style="font-size:24px; color:green"></i>')
+                            $(`#${inputId}`).removeClass('div-nonavailable').addClass('div-available');
+                        } else {
+                            $(`.input-icon-${inputId}`).html('<i class="fa fa-close" style="font-size:24px; color:red"></i>')
+                            $(`#${inputId}`).removeClass('div-available').addClass('div-nonavailable');
+                        }
+                    });
+                }
+
+                if($("#password1").val() === $("#password2").val()) {
+                    $(`.input-icon-${inputId}`).html('<i class="fa fa-check-circle" style="font-size:24px; color:green"></i>')
+                    $(`#${inputId}`).removeClass('div-nonavailable').addClass('div-available');
+                    $("#pwd-message").text("")
+                }
+                if($("#password1").val() !== $("#password2").val() && $("#password2").val() != "" ) {
+                    $(`.input-icon-${inputId}`).html('<i class="fa fa-close" style="font-size:24px; color:red"></i>')
+                    $(`#${inputId}`).removeClass('div-available').addClass('div-nonavailable');
+                    $("#pwd-message").text("Password are not same")
+                }
+                if($("#password2").val() == "") {
+                     $("#pwd-message").text("")
+                }
+            });
+        });
+    </script>
+
+ {% endblock %}

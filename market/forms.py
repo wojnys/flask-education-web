@@ -20,7 +20,8 @@ class LoginForm(FlaskForm):
 
 
 class CreateQuestion(FlaskForm):
-    answer = CKEditorField('Answer:', validators=[DataRequired()])
+    answer = CKEditorField(label='Long Answer for Card explanation:', validators=[DataRequired()])
+    quiz_answer = StringField(label="Short Answer for the Quiz:", validators=[DataRequired()])
     points = IntegerField(label='Points:', validators=[DataRequired()], render_kw={'type': 'number'})
     question = StringField(label='Question:', validators=[DataRequired()])
     topic = SelectField(label='Topic:', validators=[DataRequired()])

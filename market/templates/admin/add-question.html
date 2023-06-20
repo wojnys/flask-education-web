@@ -30,9 +30,16 @@
                 </div>
             </div>
 
-             {{ form.answer.label }}
+              {{ form.quiz_answer.label }}
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                  {{ form.quiz_answer(class="form-control", placeholder="Quiz Answer...", id="quiz_answer") }}
+                </div>
+            </div>
+
+            {{ form.answer.label }}
             {{ form.answer(class='ckeditor') }}
-            <input type="submit">
+            <input type="submit" class="btn btn-dark my-1" value="Save question">
         </form>
 
     </div>

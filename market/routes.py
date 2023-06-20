@@ -1,10 +1,17 @@
+import select
+from functools import wraps
+
+from sqlalchemy import func
+
 from market import app
-from flask import render_template, redirect, url_for, flash, get_flashed_messages, jsonify, request
-from market.models import User, Question, Topic
+from flask import render_template, redirect, url_for, flash, get_flashed_messages, jsonify, request, session, \
+    has_request_context
+from market.models import User, Question, Topic, Answer
 from market.forms import RegisterForm, LoginForm, CreateQuestion, CreateTopic
 from validate_email import validate_email
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, login_required
 from market import db
+import random
 
 
 @app.route('/')
@@ -12,12 +19,72 @@ def home_page():
     return render_template("home.html")
 
 
-@app.route('/quiz')
+@app.route('/quiz', methods=['POST', 'GET'])
 def quiz_page():
-    return render_template("quiz.html")
+    if request.method == 'POST':
+        # Clear session before every usage
+        session.clear()
+
+        # Generated list of random questions
+        my_limit_questions = 3
+        my_topic_id = request.form['topics']
+        session['topic_id'] = my_topic_id
+        session['current_question'] = 0
+        session['question_limit'] = my_limit_questions
+
+        random_questions = Question.query.filter(Question.topic_id == my_topic_id) \
+            .order_by(func.random()) \
+            .limit(my_limit_questions).all()
+
+        session['all_questions'] = session.get('all_questions',
+                                               [])  # Retrieve existing questions or initialize an empty list
+        print(random_questions)
+        for question in random_questions:
+            print(f'{question.id} + {question.question}')
+            question_data = {
+                'id': question.id,
+                'question': question.question,
+                'topic_id': question.topic_id,
+                'answer_id': question.answer_id,
+                'points': question.points
+                # Add other necessary attributes
+            }
+            session['all_questions'].append(question_data)
+            print(session['all_questions'])
+
+        # Redirect to questions
+        return redirect(f'/quiz/question/{session["current_question"]}')
+
+    else:
+        # Get all possible topics for quiz
+        topics = Topic.query.all()
+        return render_template("/quiz/quiz.html", topics=topics)
+
+
+# NEXT question
+@app.route('/quiz/question/<int:question_order_id>')
+def next_question(question_order_id):
+    session['current_question'] = question_order_id
+    actual_question = session['all_questions'][question_order_id]
+    correct_answer = Answer.query.get(actual_question['answer_id'])
+    random_answers = Question.query.filter(Question.topic_id == session['topic_id'], Question.answer_id != correct_answer.id) \
+        .order_by(func.random()) \
+        .limit(3).all()
+
+    answer_list = []
+    for answer in random_answers:
+        answer_list.append(answer.id)
+
+    answers = Answer.query.filter(Answer.id.in_(answer_list)).all()
+    answers.append(correct_answer)
+
+    random.shuffle(answers)
+
+    return render_template("/quiz/quiz-question.html", actual_question=actual_question, answers=answers)
 
 
 @app.route('/create/topic', methods=['GET', 'POST'])
+@login_required
 def create_topic():
     form = CreateTopic()
     if request.method == 'POST':
@@ -28,6 +95,7 @@ def create_topic():
 
 
 @app.route('/create/question', methods=['GET', 'POST'])
+@login_required
 def create_question():
     form = CreateQuestion()
     if request.method == 'POST':
@@ -36,6 +104,7 @@ def create_question():
             'points': request.form['points'],
             'topic': request.form['topic'],
             'answer': request.form['answer'],
+            'quiz_answer': request.form['quiz_answer']
 
         }
         Question.save_question(data)
@@ -46,12 +115,15 @@ def create_question():
 
 @app.route('/question', methods=['GET', 'POST'])
 def question_page():
-    questions = Question.query.filter_by().all()
-    topics = Topic.query.all()
-    if request.method == "POST" and request.form["topic_id"] != "all":
-        questions = Question.query.filter_by(topic_id=request.form["topic_id"]).all()
+    # Get all topics from DB
+    all_topics = Topic.query.all()
+    data = []
+    if request.method == "POST":
+        # Get topics_list from multiple select
+        topics_list = request.form.getlist('topics')
+        data = Question.query.filter(Question.topic_id.in_(topics_list)).all()
 
-    return render_template("questions.html", questions=questions, topics=topics)
+    return render_template("questions.html", questions=data, topics=all_topics)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -81,6 +153,8 @@ def register_page():
 @app.route('/login', methods=['POST', 'GET'])
 def login_page():
     form = LoginForm()
+    session['logged_in'] = True
+    session['quiz_started'] = False
 
     if form.validate_on_submit():
         attempted_user = User.query.filter_by(username=form.username.data).first()
@@ -126,6 +200,8 @@ def check_username():
 
 
 @app.route('/logout')
+@login_required
 def logout_page():
     logout_user()
+    session['logged_in'] = False
     return redirect(url_for("home_page"))

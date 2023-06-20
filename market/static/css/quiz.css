@@ -1,0 +1,24 @@
+.answers {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.flex-container .row > div {
+  margin-right: 10px; /* Adjust the margin as needed */
+}
+#quiz-answer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#quiz-answer:hover {
+    cursor:pointer;
+    background-color: #d4d4d4;
+    border:none;
+    color:black;
+}
+
+
+

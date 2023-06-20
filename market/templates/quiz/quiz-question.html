@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Quiz is runnnig </title>
+{% endblock %}
+
+
+{% block body %}
+    <div class="container text-center">
+        <h1 class="text-center">IS running</h1>
+
+         <div class="quiz container w-100 flex-container flex-wrap">
+             <p>{{ session['current_question'] + 1}} /  {{session['question_limit'] }}</p>
+             <p>{{  actual_question.points }}</p>
+             <h1>  {{ actual_question.question }} </h1>
+            <form method="POST">
+                 <div class="answers">
+                    {% for answer in answers %}
+                        <div class="col-md-5 mb-3 m-1 btn btn-secondary" id="quiz-answer" data-answerid="{{ answer.id }}">{{ answer.quiz_answer }}</div>
+                     {% endfor %}
+                 </div>
+            </form>
+                {% if session['current_question'] > 0  %}
+                    <a href="{{ url_for('next_question', question_order_id=session['current_question'] - 1) }}"><i class='fas fa-arrow-alt-circle-left' style='font-size:46px'></i></a>
+                 {% else %}
+                    <a href="#"><i class='fas fa-arrow-alt-circle-left' style='font-size:46px; color: rgba(0,0,0,0.16);'></i></a>
+                {% endif %}
+
+                {% if session['current_question'] < session['question_limit'] - 1 %}
+                     <a href="{{ url_for('next_question', question_order_id=session['current_question'] + 1) }}"><i class='fas fa-arrow-alt-circle-right' style='font-size:46px'></i></a>
+                 {% else %}
+                    <a href="#"><i class='fas fa-arrow-alt-circle-right' style='font-size:46px; color: rgba(0,0,0,0.16);'></i></a>
+                {% endif %}
+            </div>
+    </div>
+
+
+    <script>
+        // Get all the div elements with the class 'my-div'
+            var answers = document.querySelectorAll('#quiz-answer');
+
+            // Attach click event listener to each div
+            answers.forEach(function(answer) {
+              answer.addEventListener('click', function() {
+                // Retrieve the data-id value of the clicked div
+                let answerID = this.dataset.answerid;
+                console.log(answerID)
+              });
+            });
+
+    </script>
+
+
+{% endblock body %}

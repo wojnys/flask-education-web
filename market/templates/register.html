@@ -103,7 +103,7 @@ span {
                 if($("#password1").val() !== $("#password2").val() && $("#password2").val() != "" ) {
                     $(`.input-icon-${inputId}`).html('<i class="fa fa-close" style="font-size:24px; color:red"></i>')
                     $(`#${inputId}`).removeClass('div-available').addClass('div-nonavailable');
-                    $("#pwd-message").text("Password are not same")
+                    $("#pwd-message").text("Passwords are not same")
                 }
                 if($("#password2").val() == "") {
                      $("#pwd-message").text("")

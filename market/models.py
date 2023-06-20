@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(50), nullable=False, unique=True)
     password_hash = db.Column(db.String(80), nullable=False)
     budget = db.Column(db.Integer(), nullable=False, default=100)
+    is_admin = db.Column(db.Boolean(), default=False)
 
     def __repr__(self):
         return f'Item {self.username}'
@@ -60,7 +61,12 @@ class Question(db.Model):
 
     @classmethod
     def save_question(cls, data):
-        Answer.save_answer(data['answer'])
+        print(data['quiz_answer'])
+        answer_data = {
+            'answer': data['answer'],
+            'quiz_answer': data['quiz_answer']
+        }
+        Answer.save_answer(answer_data)
         answer_id = db.session.query(func.max(Answer.id)).scalar()
         new_question = Question(
             question=data['question'],
@@ -75,11 +81,14 @@ class Question(db.Model):
 class Answer(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     answer = db.Column(db.String(1000), nullable=False)
-    #questions = db.relationship('Question', backref='answer')
+    quiz_answer = db.Column(db.String(300), nullable=False)
 
     @classmethod
     def save_answer(cls, ans):
-        new_answer = Answer(answer=ans)
+        new_answer = Answer(
+            answer=ans["answer"],
+            quiz_answer=ans['quiz_answer']
+        )
         db.session.add(new_answer)
         db.session.commit()
 

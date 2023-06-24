@@ -1,3 +1,5 @@
+![image](https://github.com/wojnys/flask-education-web/assets/77916807/b34ffccc-8619-4e85-85a6-7f7945c34724)
+
 # Flask education project 
 - This project is about to help students to get new knowledge and new information
 

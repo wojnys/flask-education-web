@@ -77,6 +77,11 @@ class Question(db.Model):
         db.session.add(new_question)
         db.session.commit()
 
+    @staticmethod
+    def get_points(answer_id=None):
+        get_record = Question.query.filter_by(answer_id=answer_id).first()
+        return get_record.points
+
 
 class Answer(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
@@ -96,7 +101,8 @@ class Answer(db.Model):
 class Topic(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     topic = db.Column(db.String(60), nullable=False)
-    #questions = db.relationship('Question', backref='topic')
+
+    # questions = db.relationship('Question', backref='topic')
 
     @classmethod
     def save_topic(cls, topic):

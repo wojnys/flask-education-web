@@ -6,17 +6,20 @@
 
 
 {% block body %}
+<section class="quiz-is-running">
     <div class="container text-center">
-        <h1 class="text-center">IS running</h1>
+        <div class="score-div">
+             <div class="questions-count">{{ session['current_question'] + 1}} /  {{session['question_limit'] }}</div>
+             <div class="points">{{  actual_question.points }} </div>
+        </div>
 
-         <div class="quiz container w-100 flex-container flex-wrap">
-             <p>{{ session['current_question'] + 1}} /  {{session['question_limit'] }}</p>
-             <p>{{  actual_question.points }}</p>
-             <h1>  {{ actual_question.question }} </h1>
+         <div class="quiz container w-100 d-flex flex-wrap justify-content-center align-items-center ">
+             <h1 style="color:white">  {{ actual_question.question }} </h1>
+             <h1 class="answer-state"></h1>
             <form method="POST">
                  <div class="answers">
                     {% for answer in answers %}
-                        <div class="col-md-5 mb-3 m-1 btn btn-secondary" id="quiz-answer" data-answerid="{{ answer.id }}">{{ answer.quiz_answer }}</div>
+                        <div class="col-11 m-1 btn btn-primary" id="quiz-answer" data-answerid="{{ answer.id }}">{{ answer.quiz_answer }}</div>
                      {% endfor %}
                  </div>
             </form>
@@ -33,20 +36,35 @@
                 {% endif %}
             </div>
     </div>
-
+</section>
 
     <script>
         // Get all the div elements with the class 'my-div'
             var answers = document.querySelectorAll('#quiz-answer');
 
-            // Attach click event listener to each div
-            answers.forEach(function(answer) {
-              answer.addEventListener('click', function() {
-                // Retrieve the data-id value of the clicked div
-                let answerID = this.dataset.answerid;
-                console.log(answerID)
-              });
-            });
+            $(document).ready(function() {
+                // Attach click event listener to each div
+                answers.forEach(function(answer) {
+                  answer.addEventListener('click', function() {
+                    // Retrieve the data-id value of the clicked div
+                    let answerID = this.dataset.answerid;
+                    console.log(answerID)
+                      $.post('/check_answer_correctness', {'answer_id': answerID}, function(response) {
+                          if(response.user_correct_answer) {
+                              $(".answer-state").removeClass("bad-answer")
+                              $(".answer-state").addClass("correct-answer")
+                              $(`div[data-answerid="${answerID}"]`).addClass('btn-success');
+                          }
+                          else {
+                               $(".answer-state").removeClass("correct-answer")
+                               $(".answer-state").addClass("bad-answer")
+                               $(`div[data-answerid="${answerID}"]`).addClass("btn-danger")
+                               $(`div[data-answerid="${response.correct_answer_id}"]`).addClass("btn-success")
+                          }
+                    });
+                  });
+                });
+            })
 
     </script>
 

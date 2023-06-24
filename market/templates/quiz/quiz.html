@@ -6,19 +6,24 @@
 
 
 {% block body %}
-    <div class="container text-center">
-        <h1 class="text-center">Start quiz</h1>
+    <section class="quiz">
+        <div class="container text-center vh-100 d-flex align-items-center justify-content-center flex-column">
+            <div class="quiz-plate d-flex align-items-center justify-content-center flex-column">
+                <div>
+                    <img src="/static/assets/quiz-image.png" class="w-75" />
+                </div>
 
-        <form method="POST">
-            <select class="form-control"  placeholder="Choose Topic..." name="topics">
-                {% for topic in topics %}
-                    <option value="{{ topic.id }}">{{ topic.topic }}</option>
-                {% endfor %}
-                <input type="submit" class="btn btn-info w-25 p-3 m-1" value="START">
-            </select>
-        </form>
-
-    </div>
+                <form method="POST" class="d-flex align-items-center justify-content-center flex-column m-3">
+                    <select class="form-control " placeholder="Choose Topic..." name="topics">
+                        {% for topic in topics %}
+                            <option value="{{ topic.id }}">{{ topic.topic }}</option>
+                        {% endfor %}
+                        <input type="submit" class="btn btn-primary w-50 p-2 m-1" value="START">
+                    </select>
+                </form>
+            </div>
+        </div>
+    </section>
 
 
 {% endblock body %}

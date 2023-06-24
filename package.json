@@ -1,0 +1,22 @@
+{
+  "name": "educationproject",
+  "version": "1.0.0",
+  "description": "- This project is about to help students to get new knowledge and new information",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wojnys/flask-education-web.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wojnys/flask-education-web/issues"
+  },
+  "homepage": "https://github.com/wojnys/flask-education-web#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.0"
+  }
+}

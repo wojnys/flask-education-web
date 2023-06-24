@@ -11,6 +11,7 @@ from market.forms import RegisterForm, LoginForm, CreateQuestion, CreateTopic
 from validate_email import validate_email
 from flask_login import login_user, logout_user, login_required
 from market import db
+from market.helpers import *
 import random
 
 
@@ -22,8 +23,8 @@ def home_page():
 @app.route('/quiz', methods=['POST', 'GET'])
 def quiz_page():
     if request.method == 'POST':
-        # Clear session before every usage
-        session.clear()
+        # Clear necessary session before every usage
+        clear_session(['topic_id', 'current_question', 'question_limit', 'user_score', 'all_questions'])
 
         # Generated list of random questions
         my_limit_questions = 3
@@ -36,6 +37,7 @@ def quiz_page():
             .order_by(func.random()) \
             .limit(my_limit_questions).all()
 
+        session['user_score'] = session.get('user_score', [])
         session['all_questions'] = session.get('all_questions',
                                                [])  # Retrieve existing questions or initialize an empty list
         print(random_questions)
@@ -67,6 +69,7 @@ def next_question(question_order_id):
     session['current_question'] = question_order_id
     actual_question = session['all_questions'][question_order_id]
     correct_answer = Answer.query.get(actual_question['answer_id'])
+    session['correct_answer'] = correct_answer.id
     random_answers = Question.query.filter(Question.topic_id == session['topic_id'], Question.answer_id != correct_answer.id) \
         .order_by(func.random()) \
         .limit(3).all()
@@ -81,6 +84,23 @@ def next_question(question_order_id):
     random.shuffle(answers)
 
     return render_template("/quiz/quiz-question.html", actual_question=actual_question, answers=answers)
+
+
+@app.route("/check_answer_correctness", methods=['POST'])
+def check_answer_correctness():
+    user_answerID = int(request.form['answer_id'])
+    correct_answerID = int(session['correct_answer'])
+
+    correct_values_data = {
+        'correct_answer_id': correct_answerID,
+        'user_correct_answer': False,
+    }
+    print(session['user_score'])
+    if correct_answerID == user_answerID:
+        # Correct answer
+        correct_values_data['user_correct_answer'] = True
+
+    return jsonify(correct_values_data)
 
 
 @app.route('/create/topic', methods=['GET', 'POST'])

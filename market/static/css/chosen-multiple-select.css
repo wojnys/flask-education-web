@@ -172,7 +172,7 @@
     display: list-item;
     cursor: pointer;
     padding:10px;
-    background: #17a2b8;
+    background: #6246b6;
     border-radius: 5px;
     color:white;
     margin-top: 5px;
@@ -237,7 +237,7 @@
     background-image: -moz-linear-gradient(#eee 1%,#fff 15%);
     background-image: -o-linear-gradient(#eee 1%,#fff 15%);
     background-image: linear-gradient(#eee 1%,#fff 15%);
-    background: #17a2b8;
+    background: #6246b6;
     color:white;
     cursor: text;
     border-radius: 5px;
@@ -380,7 +380,7 @@
 }
 
 .chosen-container-active .chosen-choices li.search-field input[type=text] {
-    color: #111!important
+    color: white;
 }
 
 .chosen-disabled {

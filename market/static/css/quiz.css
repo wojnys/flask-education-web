@@ -73,5 +73,20 @@ section .quiz {
     color:red;
 }
 
+.quiz-end .container {
+    height: 75vh;
+}
+
+.points_overall {
+      background-image:  url('../assets/points.png');
+    background-size: cover; /* or any other value */
+     width:150px;
+    height:150px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+}
+
 
 

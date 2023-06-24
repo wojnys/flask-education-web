@@ -1,18 +1,17 @@
-import select
-from functools import wraps
-
 from sqlalchemy import func
 
-from market import app
-from flask import render_template, redirect, url_for, flash, get_flashed_messages, jsonify, request, session, \
-    has_request_context
-from market.models import User, Question, Topic, Answer
-from market.forms import RegisterForm, LoginForm, CreateQuestion, CreateTopic
-from validate_email import validate_email
-from flask_login import login_user, logout_user, login_required
-from market import db
-from market.helpers import *
 import random
+
+from flask import render_template, redirect, url_for, flash, jsonify, request
+from flask_login import login_user, logout_user, login_required
+from sqlalchemy import func
+from validate_email import validate_email
+
+from market import app
+from market import db
+from market.forms import RegisterForm, LoginForm, CreateQuestion, CreateTopic
+from market.helpers import *
+from market.models import User, Question, Topic, Answer
 
 
 @app.route('/')
@@ -37,10 +36,11 @@ def quiz_page():
             .order_by(func.random()) \
             .limit(my_limit_questions).all()
 
-        session['user_score'] = session.get('user_score', [])
+        session['user_score'] = session.get('user_score',
+                                            [])  # Retrieve existing questions or initialize an empty list
+
         session['all_questions'] = session.get('all_questions',
                                                [])  # Retrieve existing questions or initialize an empty list
-        print(random_questions)
         for question in random_questions:
             print(f'{question.id} + {question.question}')
             question_data = {
@@ -90,18 +90,39 @@ def next_question(question_order_id):
 def check_answer_correctness():
     user_answerID = int(request.form['answer_id'])
     correct_answerID = int(session['correct_answer'])
+    session['user_score'] = session.get('user_score')  # Get session list
+
+    question = Question.query.filter(Question.answer_id == correct_answerID).first()
+    question_points = Question.get_points(correct_answerID)
+
+    stats = {
+        'question': question.id,
+        'answered': True,
+        'points': question_points,
+    }
 
     correct_values_data = {
         'correct_answer_id': correct_answerID,
         'user_correct_answer': False,
     }
-    print(session['user_score'])
+    question_exists = any(stat['question'] == question.id for stat in session['user_score'])
     if correct_answerID == user_answerID:
         # Correct answer
         correct_values_data['user_correct_answer'] = True
+        if not question_exists:
+            session['user_score'].append(stats)
+    else:
+        # Incorrect answer
+        if not question_exists:
+            stats['points'] = 0
+            session['user_score'].append(stats)
 
     return jsonify(correct_values_data)
 
+@app.route('/quiz/finished')
+def quiz_end():
+    points = sum(stat['points'] for stat in session['user_score'])
+    return render_template("/quiz/quiz_end.html", points=points)
 
 @app.route('/create/topic', methods=['GET', 'POST'])
 @login_required

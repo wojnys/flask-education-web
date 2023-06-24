@@ -13,27 +13,31 @@
              <div class="points">{{  actual_question.points }} </div>
         </div>
 
-         <div class="quiz container w-100 d-flex flex-wrap justify-content-center align-items-center ">
-             <h1 style="color:white">  {{ actual_question.question }} </h1>
+         <div class="quiz container w-100 d-flex flex-wrap justify-content-center align-items-center flex-column">
+             <h3 style="color:white">  {{ actual_question.question }} </h3>
              <h1 class="answer-state"></h1>
             <form method="POST">
-                 <div class="answers">
+                 <div class="answers my-3">
                     {% for answer in answers %}
                         <div class="col-11 m-1 btn btn-primary" id="quiz-answer" data-answerid="{{ answer.id }}">{{ answer.quiz_answer }}</div>
                      {% endfor %}
                  </div>
             </form>
-                {% if session['current_question'] > 0  %}
-                    <a href="{{ url_for('next_question', question_order_id=session['current_question'] - 1) }}"><i class='fas fa-arrow-alt-circle-left' style='font-size:46px'></i></a>
-                 {% else %}
-                    <a href="#"><i class='fas fa-arrow-alt-circle-left' style='font-size:46px; color: rgba(0,0,0,0.16);'></i></a>
-                {% endif %}
+                <div class="flex-row">
+                    {% if session['current_question'] > 0  %}
+                        <a href="{{ url_for('next_question', question_order_id=session['current_question'] - 1) }}"><i class='fas fa-arrow-alt-circle-left' style='font-size:46px'></i></a>
+                     {% else %}
+                        <a href="#"><i class='fas fa-arrow-alt-circle-left' style='font-size:46px; color: rgba(255,255,255,0.09);'></i></a>
+                    {% endif %}
 
-                {% if session['current_question'] < session['question_limit'] - 1 %}
-                     <a href="{{ url_for('next_question', question_order_id=session['current_question'] + 1) }}"><i class='fas fa-arrow-alt-circle-right' style='font-size:46px'></i></a>
-                 {% else %}
-                    <a href="#"><i class='fas fa-arrow-alt-circle-right' style='font-size:46px; color: rgba(0,0,0,0.16);'></i></a>
-                {% endif %}
+                    {% if session['current_question'] < session['question_limit'] - 1 %}
+                         <a href="{{ url_for('next_question', question_order_id=session['current_question'] + 1) }}"><i class='fas fa-arrow-alt-circle-right' style='font-size:46px'></i></a>
+                     {% else %}
+                        <a href="#"><i class='fas fa-arrow-alt-circle-right' style='font-size:46px; color:rgba(255,255,255,0.09);'></i></a>
+                    {% endif %}
+                </div>
+
+                <a href="{{ url_for('quiz_end') }}" class="btn btn-light m-3 p-2">Ukončit Test</a>
             </div>
     </div>
 </section>

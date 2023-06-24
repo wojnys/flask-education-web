@@ -104,6 +104,7 @@ def check_answer_correctness():
     correct_values_data = {
         'correct_answer_id': correct_answerID,
         'user_correct_answer': False,
+        'finish_quiz': False
     }
     question_exists = any(stat['question'] == question.id for stat in session['user_score'])
     if correct_answerID == user_answerID:
@@ -117,6 +118,8 @@ def check_answer_correctness():
             stats['points'] = 0
             session['user_score'].append(stats)
 
+    if session['current_question']+1 == session['question_limit']:
+        correct_values_data['finish_quiz'] = True
     return jsonify(correct_values_data)
 
 @app.route('/quiz/finished')

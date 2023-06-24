@@ -76,6 +76,9 @@ section .quiz {
 .quiz-end .container {
     height: 75vh;
 }
+#quiz_finish_button {
+    display:none;
+}
 
 .points_overall {
       background-image:  url('../assets/points.png');

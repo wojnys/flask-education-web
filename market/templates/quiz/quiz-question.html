@@ -37,7 +37,7 @@
                     {% endif %}
                 </div>
 
-                <a href="{{ url_for('quiz_end') }}" class="btn btn-light m-3 p-2">Ukončit Test</a>
+                <a href="{{ url_for('quiz_end') }}" class="btn btn-light m-3 p-2" id="quiz_finish_button">Ukončit Test</a>
             </div>
     </div>
 </section>
@@ -59,12 +59,16 @@
                               $(".answer-state").addClass("correct-answer")
                               $(`div[data-answerid="${answerID}"]`).addClass('btn-success');
                           }
-                          else {
+                          if(!response.user_correct_answer) {
                                $(".answer-state").removeClass("correct-answer")
                                $(".answer-state").addClass("bad-answer")
                                $(`div[data-answerid="${answerID}"]`).addClass("btn-danger")
                                $(`div[data-answerid="${response.correct_answer_id}"]`).addClass("btn-success")
                           }
+                           if(response.finish_quiz) {
+                              $("#quiz_finish_button").css("display","block")
+                          }
+
                     });
                   });
                 });

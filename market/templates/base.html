@@ -20,13 +20,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/questions.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chosen-multiple-select.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <!-- SCSS files -->
     <link rel="stylesheet" href="{{ url_for('static', filename='scss/main.css') }}">
-
     {% block head %} {% endblock %}
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light p-2">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark p-2 text-white">
   <a class="navbar-brand" href="#">Navbar</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -90,8 +91,8 @@
         {% for category, message in messages %}
             <div class="alert alert-{{ category }} m-2 col-md-11">
                 {{ message }}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="border: none; background: unset">
+                <span><i class="fa fa-close"></i> </span>
               </button>
             </div>
         {% endfor %}

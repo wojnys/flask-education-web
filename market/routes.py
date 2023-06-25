@@ -204,10 +204,10 @@ def login_page():
         attempted_user = User.query.filter_by(username=form.username.data).first()
         if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
             login_user(attempted_user)
-            flash(f'You are logged in as {attempted_user.username}', category='success')
+            # flash(f'You are logged in as {attempted_user.username}', category='success')
             return redirect(url_for('quiz_page'))
         else:
-            flash(f'Username and Password are not match', category='danger')
+            flash(f'Username and Password are not match', category='primary')
 
     return render_template("login.html", form=form)
 

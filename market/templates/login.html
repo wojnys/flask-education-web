@@ -5,35 +5,74 @@
 {% endblock %}
 
  {% block body %}
-     <h1>Login Form</h1>
-     <div class="container">
-        <p id="availability"></p>
-        <form method="POST" class="form-register">
-            {{ form.hidden_tag() }}
-             {{ form.username.label }}
-            <div class="form-row">
-                <div class="form-group col-md-11">
-                  {{ form.username(class="check-input-data form-control", placeholder="Username...", id="username") }}
-                </div>
-                <div class="form-group col-md-0">
-                  <span class="input-icon input-icon-username"></span>
-                </div>
-            </div>
+{#     <h1>Login Form</h1>#}
+{#     <div class="container">#}
+{#        <p id="availability"></p>#}
+{#        <form method="POST" class="form-register">#}
+{#            {{ form.hidden_tag() }}#}
+{#             {{ form.username.label }}#}
+{#            <div class="form-row">#}
+{#                <div class="form-group col-md-11">#}
+{#                  {{ form.username(class="check-input-data form-control", placeholder="Username...", id="username") }}#}
+{#                </div>#}
+{#                <div class="form-group col-md-0">#}
+{#                  <span class="input-icon input-icon-username"></span>#}
+{#                </div>#}
+{#            </div>#}
+{##}
+{#            {{ form.password.label }}#}
+{#            <div class="form-row">#}
+{#                <div class="form-group col-md-11">#}
+{#                  {{ form.password(class="check-input-data form-control", placeholder="Password...", id="password") }}#}
+{#                </div>#}
+{#                <div class="form-group col-md-0">#}
+{#                  <span class="input-icon input-icon-email"></span>#}
+{#                </div>#}
+{#            </div>#}
+{##}
+{#            {{ form.submit(class="btn btn-bg btn-block btn-primary my-2 col-md-11") }}#}
+{##}
+{#        </form>#}
+{#     </div>#}
 
-            {{ form.password.label }}
-            <div class="form-row">
-                <div class="form-group col-md-11">
-                  {{ form.password(class="check-input-data form-control", placeholder="Password...", id="password") }}
-                </div>
-                <div class="form-group col-md-0">
-                  <span class="input-icon input-icon-email"></span>
-                </div>
-            </div>
+      <section>
+   <div class="signin">
 
-            {{ form.submit(class="btn btn-bg btn-block btn-primary my-2 col-md-11") }}
+    <div class="content">
 
-        </form>
+     <h2>LOGIN</h2>
+    <form method="POST" class="w-100">
+        {{ form.hidden_tag() }}
+        <div class="form">
+
+      <div class="inputBox">
+
+          {{ form.username(class="", id="username") }}
+            <i class="input-label-i">  {{ form.username.label }}</i>
+      </div>
+
+      <div class="inputBox">
+
+          {{ form.password(class="", id="password") }}
+            <i class="input-label-i">  {{ form.password.label }}</i>
+      </div>
+
+      <div class="links"> <a href="#">Forgot Password</a> <a href="{{ url_for('register_page') }}">Register</a>
+
+      </div>
+
+
+
+        {{ form.submit(class="btn btn-bg btn-block btn-primary my-2 p-3 font-20") }}
+
      </div>
+        </form>
+
+    </div>
+
+   </div>
+
+  </section> <!-- partial -->
 
 
 

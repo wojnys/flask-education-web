@@ -2,6 +2,7 @@
 nav .navbar-nav{
     display: flex;
     width:100%;
+  color:white;
 }
 
 nav .navbar-nav .right-side {

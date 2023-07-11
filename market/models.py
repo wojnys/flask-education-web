@@ -17,13 +17,17 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(80), nullable=False)
     budget = db.Column(db.Integer(), nullable=False, default=100)
     is_admin = db.Column(db.Boolean(), default=False)
+    had_first_login = db.Column(db.Boolean(), default=False)
 
     def __repr__(self):
-        return f'Item {self.username}'
+        return f'User {self.username}'
 
     @property
     def password(self):
         return self.password
+
+    def had_first_login_before(self):
+        return self.had_first_login
 
     # encrypt password field
     @password.setter
@@ -32,6 +36,11 @@ class User(db.Model, UserMixin):
 
     def check_password_correction(self, attempted_password):
         return bcrypt.check_password_hash(self.password_hash, attempted_password)
+
+    def set_first_login(self, value):
+        user = User.query.get(self.id)
+        user.had_first_login = value
+        db.session.commit()
 
     @classmethod
     def username_exists(cls, username):

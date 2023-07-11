@@ -122,10 +122,12 @@ def check_answer_correctness():
         correct_values_data['finish_quiz'] = True
     return jsonify(correct_values_data)
 
+
 @app.route('/quiz/finished')
 def quiz_end():
     points = sum(stat['points'] for stat in session['user_score'])
     return render_template("/quiz/quiz_end.html", points=points)
+
 
 @app.route('/create/topic', methods=['GET', 'POST'])
 @login_required
@@ -180,16 +182,16 @@ def register_page():
         username_exists = user_to_create.username_exists(username=form.username.data)
         email_exist = user_to_create.email_exists(email=form.email.data)
         if username_exists:
-            flash(f'Username already registered', category='danger')
+            flash('Username is already registered', 'username')
         if email_exist:
-            flash(f'Email already registered', category='danger')
+            flash('Email is already registered', 'email')
         else:
             db.session.add(user_to_create)
             db.session.commit()
             return redirect(url_for("login_page"))
-    if form.errors != {}:
-        for err_mg in form.errors.values():
-            flash(f'the is a problem with registration {err_mg}', category='danger')
+    # if form.errors != {}:
+    #     # for err_mg in form.errors.values():
+    #     #     flash(f'the is a problem with registration {err_mg}', category='danger')
 
     return render_template("register.html", form=form)
 
@@ -198,16 +200,19 @@ def register_page():
 def login_page():
     form = LoginForm()
     session['logged_in'] = True
-    session['quiz_started'] = False
 
     if form.validate_on_submit():
         attempted_user = User.query.filter_by(username=form.username.data).first()
         if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
             login_user(attempted_user)
-            # flash(f'You are logged in as {attempted_user.username}', category='success')
-            return redirect(url_for('quiz_page'))
+            if attempted_user.had_first_login_before():
+                return redirect(url_for('quiz_page'))
+            else:
+                # Set that user was logged for the first time
+                attempted_user.set_first_login(True)
+                return redirect(url_for('setup_profile'))
         else:
-            flash(f'Username and Password are not match', category='primary')
+            flash(f'Invalid password or email address', category='danger')
 
     return render_template("login.html", form=form)
 
@@ -249,3 +254,10 @@ def logout_page():
     logout_user()
     session['logged_in'] = False
     return redirect(url_for("home_page"))
+
+
+@app.route('/setup_profile', methods=['POST', 'GET'])
+@login_required
+def setup_profile():
+    return render_template("logged-user/setup-profile.html")
+

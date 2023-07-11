@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% import "errors/macro-error.html" as macros %}
 
 {% block head %}
     <title>Register</title>
@@ -22,57 +23,6 @@ span {
     box-shadow: 0px 0px 2px red;
 }
 </style>
-{#     <h1>Register Form</h1>#}
-{#     <div class="container">#}
-{#        <p id="availability"></p>#}
-{#        <form method="POST" class="form-register">#}
-{#            {{ form.hidden_tag() }}#}
-{#             {{ form.username.label }}#}
-{#            <div class="row">#}
-{#                <div class="form-group col-11">#}
-{#                  {{ form.username(class="check-input-data form-control", placeholder="Username...", id="username") }}#}
-{#                </div>#}
-{##}
-{#                <div class="col-1">#}
-{#                  <span class="input-icon input-icon-username"></span>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#            {{ form.email.label }}#}
-{#            <div class="row">#}
-{#                <div class="form-group col-11">#}
-{#                  {{ form.email(class="check-input-data form-control", placeholder="Email...", id="email") }}#}
-{#                </div>#}
-{#                <div class="form-group col-1">#}
-{#                  <span class="input-icon input-icon-email"></span>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#              {{ form.password1.label }}#}
-{#            <div class="row">#}
-{#                <div class="form-group col-11">#}
-{#                  {{ form.password1(class="check-input-data form-control", placeholder="Password...", id="password1") }}#}
-{#                </div>#}
-{#                <div class="form-group col-1">#}
-{#                  <span class="input-icon input-icon-password1"></span>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#            {{ form.password2.label }}#}
-{#            <p class="text-danger m-0" id="pwd-message"></p>#}
-{#            <div class="row">#}
-{#                <div class="form-group col-11">#}
-{#                  {{ form.password2(class="form-control", placeholder="Confirm password...", id="password2") }}#}
-{#                </div>#}
-{#                <div class="form-group col-1">#}
-{#                  <span class="input-icon input-icon-password2"></span>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#            {{ form.submit(class="btn btn-bg btn-block btn-primary my-2 col-11") }}#}
-{##}
-{#        </form>#}
-{#     </div>#}
 
 
      <section>
@@ -81,7 +31,7 @@ span {
     <div class="content">
 
      <h2>REGISTER</h2>
-    <form method="POST">
+    <form method="POST" id="registerFrom">
         {{ form.hidden_tag() }}
         <div class="form">
 
@@ -96,6 +46,9 @@ span {
                 <div class="col-1">
                   <span class="input-icon input-icon-username"></span>
                 </div>
+
+                  {{ macros.flash_messages('username') }}
+
             </div>
         </div>
 
@@ -109,6 +62,10 @@ span {
                   <span class="input-icon input-icon-email"></span>
                 </div>
             </div>
+
+{{ macros.flash_messages('email') }}
+
+
           </div>
 
       <div class="inputBox">
@@ -121,6 +78,7 @@ span {
                 <div class="form-group col-1">
                   <span class="input-icon input-icon-password1"></span>
                 </div>
+
             </div>
       </div>
 
@@ -139,13 +97,12 @@ span {
 
       </div>
 
-      <div class="links"> <a href="#">Have already account ?</a> <a href="{{ url_for('login_page') }}">Login</a>
+      <div class="links col-11"> <a href="#">Have already account ?</a> <a href="{{ url_for('login_page') }}">Login</a>
 
       </div>
 
 
-
-        {{ form.submit(class="btn btn-bg btn-block btn-primary my-2 p-3 font-20") }}
+        {{ form.submit(class="btn btn-bg btn-block btn-primary my-2 p-3 font-20 col-11") }}
 
      </div>
         </form>
@@ -154,7 +111,9 @@ span {
 
    </div>
 
-  </section> <!-- partial -->
+  </section>
+
+
 
      <script>
         $(document).ready(function() {
@@ -169,9 +128,11 @@ span {
                         if (response.available) {
                             $(`.input-icon-${inputId}`).html('<i class="fa fa-check-circle" style="font-size:24px; color:limegreen"></i>')
                             $(`#${inputId}`).removeClass('div-nonavailable').addClass('div-available');
+
                         } else {
                             $(`.input-icon-${inputId}`).html('<i class="fa fa-close" style="font-size:24px; color:red"></i>')
                             $(`#${inputId}`).removeClass('div-available').addClass('div-nonavailable');
+
                         }
                     });
                 }
@@ -180,6 +141,7 @@ span {
                     $(`.input-icon-${inputId}`).html('<i class="fa fa-check-circle" style="font-size:24px; color:green"></i>')
                     $(`#${inputId}`).removeClass('div-nonavailable').addClass('div-available');
                     $("#pwd-message").text("")
+
                 }
                 if($("#password1").val() !== $("#password2").val() && $("#password2").val() != "" ) {
                     $(`.input-icon-${inputId}`).html('<i class="fa fa-close" style="font-size:24px; color:red"></i>')
@@ -189,8 +151,11 @@ span {
                 if($("#password2").val() == "") {
                      $("#pwd-message").text("")
                 }
+
             });
         });
+
     </script>
+
 
  {% endblock %}

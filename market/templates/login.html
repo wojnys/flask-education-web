@@ -4,76 +4,53 @@
     <title>Register</title>
 {% endblock %}
 
- {% block body %}
-{#     <h1>Login Form</h1>#}
-{#     <div class="container">#}
-{#        <p id="availability"></p>#}
-{#        <form method="POST" class="form-register">#}
-{#            {{ form.hidden_tag() }}#}
-{#             {{ form.username.label }}#}
-{#            <div class="form-row">#}
-{#                <div class="form-group col-md-11">#}
-{#                  {{ form.username(class="check-input-data form-control", placeholder="Username...", id="username") }}#}
-{#                </div>#}
-{#                <div class="form-group col-md-0">#}
-{#                  <span class="input-icon input-icon-username"></span>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#            {{ form.password.label }}#}
-{#            <div class="form-row">#}
-{#                <div class="form-group col-md-11">#}
-{#                  {{ form.password(class="check-input-data form-control", placeholder="Password...", id="password") }}#}
-{#                </div>#}
-{#                <div class="form-group col-md-0">#}
-{#                  <span class="input-icon input-icon-email"></span>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#            {{ form.submit(class="btn btn-bg btn-block btn-primary my-2 col-md-11") }}#}
-{##}
-{#        </form>#}
-{#     </div>#}
+{% block body %}
 
-      <section>
-   <div class="signin">
+    <section>
+        <div class="signin">
 
-    <div class="content">
+            <div class="content">
 
-     <h2>LOGIN</h2>
-    <form method="POST" class="w-100">
-        {{ form.hidden_tag() }}
-        <div class="form">
+                <h2>LOGIN</h2>
+                <form method="POST" class="w-100">
+                    {{ form.hidden_tag() }}
+                    <div class="form">
 
-      <div class="inputBox">
+                        <div class="inputBox">
+                            {{ form.username(class="", id="username") }}
+                            <i class="input-label-i">  {{ form.username.label }}</i>
+                        </div>
 
-          {{ form.username(class="", id="username") }}
-            <i class="input-label-i">  {{ form.username.label }}</i>
-      </div>
+                        <div class="inputBox">
+                            {{ form.password(class="", id="password") }}
+                            <i class="input-label-i">  {{ form.password.label }}</i>
+                        </div>
+                        <div>
+                            {% with messages = get_flashed_messages(with_categories=true) %}
+                                {% if messages %}
+                                    {% for category, message in messages %}
+                                        <div class="text-{{ category }}"> {{ message }} </div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
+                        </div>
 
-      <div class="inputBox">
+                        <div class="links"><a href="#">Forgot Password</a> <a href="{{ url_for('register_page') }}">Register</a>
 
-          {{ form.password(class="", id="password") }}
-            <i class="input-label-i">  {{ form.password.label }}</i>
-      </div>
+                        </div>
 
-      <div class="links"> <a href="#">Forgot Password</a> <a href="{{ url_for('register_page') }}">Register</a>
+                        {{ form.submit(class="btn btn-bg btn-block btn-primary my-2 p-3 font-20") }}
 
-      </div>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
 
 
 
-        {{ form.submit(class="btn btn-bg btn-block btn-primary my-2 p-3 font-20") }}
+{% endblock %}
 
-     </div>
-        </form>
-
-    </div>
-
-   </div>
-
-  </section> <!-- partial -->
-
-
-
- {% endblock %}

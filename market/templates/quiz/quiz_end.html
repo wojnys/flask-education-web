@@ -1,36 +1,36 @@
 {% extends "base.html" %}
 
 {% block head %}
-<title> quiz page </title>
+    <title> quiz page </title>
 {% endblock %}
 
 
 {% block body %}
     <section class="quiz-end">
         <div class="container d-flex flex-column justify-content-center align-items-center">
-        <table class="table table-striped w-75 ">
-              <thead>
+            <table class="table table-striped w-75 ">
+                <thead>
                 <tr>
-                  <th scope="col" class="col-sm-4">Question</th>
-                  <th scope="col" class="col-sm-4">Points</th>
-                  <th scope="col" class="col-sm-4">Correct Answer</th>
+                    <th scope="col" class="col-sm-4">Question</th>
+                    <th scope="col" class="col-sm-4">Points</th>
+                    <th scope="col" class="col-sm-4">Correct Answer</th>
                 </tr>
-              </thead>
-              <tbody>
-                    {% for stat in session['user_score'] %}
-                        <tr>
-                          <th scope="row"> {{ loop.index }}</th>
-                          <td>{{ stat['points'] }}</td>
-                            {% if stat['points'] == 0 %}
-                                <td class="table-danger">False</td>
-                            {% else %}
-                                <td class="table-success">True</td>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-              </tbody>
+                </thead>
+                <tbody>
+                {% for stat in session['user_score'] %}
+                    <tr>
+                        <th scope="row"> {{ loop.index }}</th>
+                        <td>{{ stat['points'] }}</td>
+                        {% if stat['points'] == 0 %}
+                            <td class="table-danger">False</td>
+                        {% else %}
+                            <td class="table-success">True</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
             </table>
-        <div class="points_overall" style="text-align: center">{{ points }}</div>
+            <div class="points_overall" style="text-align: center">{{ points }}</div>
         </div>
     </section>
 

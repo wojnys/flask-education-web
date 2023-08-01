@@ -2,13 +2,14 @@ from sqlalchemy import func
 
 import random
 
-from flask import render_template, redirect, url_for, flash, jsonify, request
+from flask import render_template, redirect, url_for, flash, jsonify, request, send_file, send_from_directory
+from io import BytesIO
 from flask_login import login_user, logout_user, login_required
 from sqlalchemy import func
 from validate_email import validate_email
 
 from market import app
-from market import db
+from market import db, photos
 from market.forms import RegisterForm, LoginForm, CreateQuestion, CreateTopic
 from market.helpers import *
 from market.models import User, Question, Topic, Answer
@@ -70,7 +71,8 @@ def next_question(question_order_id):
     actual_question = session['all_questions'][question_order_id]
     correct_answer = Answer.query.get(actual_question['answer_id'])
     session['correct_answer'] = correct_answer.id
-    random_answers = Question.query.filter(Question.topic_id == session['topic_id'], Question.answer_id != correct_answer.id) \
+    random_answers = Question.query.filter(Question.topic_id == session['topic_id'],
+                                           Question.answer_id != correct_answer.id) \
         .order_by(func.random()) \
         .limit(3).all()
 
@@ -118,7 +120,7 @@ def check_answer_correctness():
             stats['points'] = 0
             session['user_score'].append(stats)
 
-    if session['current_question']+1 == session['question_limit']:
+    if session['current_question'] + 1 == session['question_limit']:
         correct_values_data['finish_quiz'] = True
     return jsonify(correct_values_data)
 
@@ -135,9 +137,17 @@ def create_topic():
     form = CreateTopic()
     if request.method == 'POST':
         topic_data = request.form['topic']
-        Topic.save_topic(topic_data)
+        if Topic.check_same_topic(topic_data) is None:
+            Topic.save_topic(topic_data)
+        else:
+            flash('Topic already exists', 'error')
 
     return render_template("/admin/add-topic.html", form=form)
+
+
+@app.route('/uploads/<filename>')
+def get_file(filename):
+    return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
 
 
 @app.route('/create/question', methods=['GET', 'POST'])
@@ -145,15 +155,25 @@ def create_topic():
 def create_question():
     form = CreateQuestion()
     if request.method == 'POST':
+        image = request.files.get('cropped_image')
+        # Save the uploaded image to the "uploads" folder
+        filename = photos.save(image)
+        # Get the URL of the saved image
+        file_url = url_for('get_file', filename=filename)
         data = {
-            'question': request.form['question'],
-            'points': request.form['points'],
-            'topic': request.form['topic'],
-            'answer': request.form['answer'],
-            'quiz_answer': request.form['quiz_answer']
-
+            'question': request.form.get('question'),
+            'points': request.form.get('points'),
+            'topic': request.form.get('topic'),
+            'answer': request.form.get('answer'),
+            'quiz_answer': request.form.get('quiz_answer'),
+            'image_name': filename
         }
+        print(request.form.get("question"))
+        print(request.files.get("cropped_image"))
+
         Question.save_question(data)
+
+        return jsonify({'message': 'Úspěšně uloženo', 'status': 'success'})
 
     form.populate_topic_choices()
     return render_template("/admin/add-question.html", form=form)
@@ -168,6 +188,11 @@ def question_page():
         # Get topics_list from multiple select
         topics_list = request.form.getlist('topics')
         data = Question.query.filter(Question.topic_id.in_(topics_list)).all()
+        file_url = url_for('get_file', filename="cropped_image.png")
+        print("File URL:", file_url)  # Check the file URL here
+
+    else:
+        file_url = None
 
     return render_template("questions.html", questions=data, topics=all_topics)
 
@@ -260,4 +285,3 @@ def logout_page():
 @login_required
 def setup_profile():
     return render_template("logged-user/setup-profile.html")
-

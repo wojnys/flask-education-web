@@ -59,6 +59,7 @@ class Question(db.Model):
     points = db.Column(db.Integer(), nullable=False, default=5)
     answer_id = db.Column(db.Integer(), db.ForeignKey('answer.id'))
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'))
+    image_name = db.Column(db.String(100))
 
     @property
     def answer(self):
@@ -81,7 +82,8 @@ class Question(db.Model):
             question=data['question'],
             points=data['points'],
             topic_id=data['topic'],
-            answer_id=answer_id
+            answer_id=answer_id,
+            image_name=data['image_name']
         )
         db.session.add(new_question)
         db.session.commit()
@@ -119,4 +121,7 @@ class Topic(db.Model):
         db.session.add(new_topic)
         db.session.commit()
 
-# class Image(db.Model):
+    @classmethod
+    def check_same_topic(cls, new_topic):
+        return cls.query.filter_by(topic=new_topic).first()
+

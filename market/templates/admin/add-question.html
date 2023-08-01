@@ -6,9 +6,49 @@
 
 
 {% block body %}
+
+    <style>
+.box {
+	padding-top: 0.5em;
+	width: 100%;
+	margin-top:0.5em;
+}
+
+.box-2 {
+	padding: 0.5em;
+	width: calc(100%/2 - 1em);
+
+}
+
+.options label,
+.options input{
+	width:4em;
+	padding:0.5em 1em;
+}
+
+
+img {
+	max-width: 100%;
+}
+
+img #image{
+  display: block;
+
+  /* This rule is very important, please don't ignore this */
+  max-width: 100%;
+}
+
+.alert-primary {
+    display: none;
+}
+</style>
+
+
     <div class="container">
         <h1>Create Question</h1>
-        <form method="post">
+        <div class="alert alert-primary" role="alert">
+        </div>
+        <form method="post" class="w-100" enctype="multipart/form-data" id="questionForm">
              {{ form.question.label }}
             <div class="form-row">
                 <div class="form-group col-md-12">
@@ -37,11 +77,132 @@
                 </div>
             </div>
 
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                <!-- input file -->
+                <div class="box">
+                    <input type="file" id="file-input" class="form-control" required>
+                </div>
+                <!-- leftbox -->
+                <div class="box-2">
+                    <div class="result"></div>
+                </div>
+                <!--rightbox-->
+                <div class="box-2 img-result hide">
+                    <!-- result of crop -->
+                    <img class="cropped" src="" alt="">
+                </div>
+
+            <!-- Add a hidden input field to store the cropped image data -->
+            <input type="hidden" id="croppedImageData" name="cropped_image">
+                </div>
+            </div>
+
+
+
+
+
             {{ form.answer.label }}
             {{ form.answer(class='ckeditor') }}
-            <input type="submit" class="btn btn-dark my-1" value="Save question">
+            <input type="submit" class="btn btn-dark my-1" value="Save question" id="saveForm">
+
         </form>
 
     </div>
+
+    </div>
+
+
+
+
+<script>
+
+
+// vars
+let result = document.querySelector('.result'),
+img_result = document.querySelector('.img-result'),
+img_w = document.querySelector('.img-w'),
+img_h = document.querySelector('.img-h'),
+cropped = document.querySelector('.cropped'),
+dwn = document.querySelector('.download'),
+upload = document.querySelector('#file-input'),
+cropper = '';
+
+// on change show image with crop options
+upload.addEventListener('change', e => {
+  if (e.target.files.length) {
+    // start file reader
+    const reader = new FileReader();
+    reader.onload = e => {
+      if (e.target.result) {
+        // create new image
+        let img = document.createElement('img');
+        img.id = 'image';
+        img.src = e.target.result;
+        // clean result before
+        result.innerHTML = '';
+        // append new image
+        result.appendChild(img);
+        // init cropper
+        cropper = new Cropper(img);
+      }
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  }
+});
+
+
+
+//  prevent of refreshing page - because of cropped image
+// Prevent the page from refreshing - because of cropped image
+var form = document.getElementById("questionForm");
+
+function submitForm(event) {
+  // Prevent page refresh
+  event.preventDefault();
+
+  // Get the cropped image data as a Blob (file-like object)
+  cropper.getCroppedCanvas().toBlob((blob) => {
+    // Create a new File object from the Blob
+    const file = new File([blob], 'cropped_image.png');
+
+    // Create a FormData object to send the file to the server
+    const formData = new FormData(form);
+    formData.append('cropped_image', file);
+
+    // Send the file to the server using fetch API
+    fetch('/create/question', {
+      method: 'POST',
+      body: formData,
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        if(data.status === 'success') {
+          console.log(data.message);
+          const alertSuccess = document.querySelector(".alert-primary")
+          alertSuccess.style.display="block"
+          alertSuccess.innerHTML=data.message
+
+          // Reset the form after successful submission
+          form.reset();
+          // Reset the image and cropper
+          document.querySelector("#image").src = ''; // Clear the image source
+          cropper.destroy(); // Destroy the cropper instance
+          // Reset CKEditor content
+          CKEDITOR.instances['answer'].setData('');
+        }
+    })
+    .catch((error) => console.error('Error:', error));
+  });
+}
+
+// Calling a function during form submission.
+form.addEventListener('submit', submitForm);
+
+
+
+
+    </script>
+
 
 {% endblock body %}

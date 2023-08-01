@@ -8,7 +8,7 @@
  {% block body %}
 
      <div class="container-fluid" id="grad1">
-    <div class="row justify-content-center mt-0">
+    <div class="d-flex align-items-center vh-100 justify-content-center mt-0">
         <div class="col-11 col-sm-9 col-md-7 col-lg-6 text-center p-0 mt-3 mb-2">
             <div class="card px-0 pt-4 pb-0 mt-3 mb-3 bg-dark">
                 <h2><strong>Sign Up Your User Account</strong></h2>
@@ -18,37 +18,45 @@
                         <form id="msform">
                             <!-- progressbar -->
                             <ul id="progressbar" class="d-flex justify-content-center p-0">
-                                <li class="active" id="account"><strong>Account</strong></li>
+                                <li class="active" id="account"><strong>Univerzita</strong></li>
                                 <li id="personal"><strong>Personal</strong></li>
                                 <li id="payment"><strong>Payment</strong></li>
                             </ul>
                             <!-- fieldsets -->
                             <fieldset>
                                 <div class="form-card form-group">
-                                    <h2 class="fs-title">Account Information</h2>
+                                    <label>Zvol svou univerzitu</label>
                                        <div class="inputBox">
                                            <select name="school" class="form-control">
-                                               <option value="">VSB Ostrava</option>
+                                               <option value="vsb_ostrava">VSB Ostrava</option>
                                            </select>
-
                                     </div>
-                                    <input type="email" name="email" placeholder="Email Id" class="form-control"/>
-                                    <input type="text" name="uname" placeholder="UserName"/>
-                                    <input type="password" name="pwd" placeholder="Password"/>
-                                    <input type="password" name="cpwd" placeholder="Confirm Password"/>
+                                    <label>Vyber obor</label>
+                                       <div class="inputBox">
+                                           <select name="school" class="form-control">
+                                               <option value="vsb_informatika">Informatika</option>
+                                               <option value="vsb_informatika">Elektrotechnika</option>
+                                           </select>
+                                    </div>
                                 </div>
-                                <input type="button" name="next" class="next action-button" value="Next Step"/>
+                                <input type="button" name="next" class="next btn btn-primary" value="Next Step"/>
                             </fieldset>
                             <fieldset>
                                 <div class="form-card">
-                                    <h2 class="fs-title">Personal Information</h2>
-                                    <input type="text" name="fname" placeholder="First Name"/>
-                                    <input type="text" name="lname" placeholder="Last Name"/>
-                                    <input type="text" name="phno" placeholder="Contact No."/>
-                                    <input type="text" name="phno_2" placeholder="Alternate Contact No."/>
+                                    <label>Věk ?</label>
+                                    <input type="number" name="fage" class="form-control"/>
+                                    <label>Profilový obrázek ?</label>
+                                    <input type="file" name="fpicture" class="form-control"/>
+                                    <label>Pohlaví ?</label><br>
+                                     <input type="radio" id="men" name="gender" value="men">
+                                     <label for="men">Žena</label><br>
+                                     <input type="radio" id="woman" name="gender" value="woman">
+                                     <label for="woman">Muž</label><br>
+                                    <label>Proč si se rozhodl používat tuto edukativní aplikaci ?</label>
+                                    <textarea class="form-control"></textarea>
                                 </div>
-                                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
-                                <input type="button" name="next" class="next action-button" value="Next Step"/>
+                                <input type="button" name="previous" class="previous btn btn-secondary" value="Previous"/>
+                                <input type="button" name="next" class="next btn btn-primary" value="Next Step"/>
                             </fieldset>
                             <fieldset>
                                 <div class="form-card">

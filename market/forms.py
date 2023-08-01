@@ -1,8 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, IntegerField
+from flask_wtf.file import FileAllowed, FileRequired
+from wtforms import StringField, PasswordField, SubmitField, SelectField, IntegerField, FileField
 from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
 from flask_ckeditor import CKEditorField
 from market.models import Topic
+from market import photos
 
 
 class RegisterForm(FlaskForm):
@@ -25,6 +27,7 @@ class CreateQuestion(FlaskForm):
     points = IntegerField(label='Points:', validators=[DataRequired()], render_kw={'type': 'number'})
     question = StringField(label='Question:', validators=[DataRequired()])
     topic = SelectField(label='Topic:', validators=[DataRequired()])
+    image = FileField(label='Image:', validators=[FileAllowed(photos, "Only images are allowed"), FileRequired("Cannot be empty")])
 
     def populate_topic_choices(self):
         self.topic.choices = [(topic.id, topic.topic) for topic in Topic.query.all()]

@@ -8,16 +8,25 @@
 {% block body %}
     <div class="container">
         <h1>Create Topic</h1>
-        <form method="post">
+        <form method="post" class="w-100">
               {{ form.topic.label }}
             <div class="form-row">
                 <div class="form-group col-md-12">
                   {{ form.topic(class="form-control", placeholder="Topic...", id="topic") }}
                 </div>
             </div>
+
+              {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                        <p class="p-1 my-0" style="color:red">{{ message }}</p>
+                        <br>
+                    {% endfor %}
+                  {% endif %}
+              {% endwith %}
+
                   <input type="submit" class="btn btn-dark my-1" value="Save topic">
         </form>
-
     </div>
 
 {% endblock body %}

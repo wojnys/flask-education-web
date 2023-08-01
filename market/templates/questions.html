@@ -12,18 +12,31 @@
     <div class="m-5">
 
         <form method="POST" action="/question" id="topic-form" style="margin: 10px;">
-            <select class="btn btn-info" multiple name="topics" id="topics" data-placeholder="Choose a Topic..." tabindex="4">
-                {% for topic in topics %}
-                    <option value="{{ topic.id }}">{{ topic.topic }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-primary ">Search</button>
+        <table>
+            <tr>
+                <td class="col-5">
+                    <select class="btn btn-info" multiple name="topics" id="topics" data-placeholder="Choose a Topic..." tabindex="4">
+                        {% for topic in topics %}
+                            <option value="{{ topic.id }}">{{ topic.topic }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                 <td>
+                     <button type="submit" class="btn btn-primary ">Search</button>
+                 </td>
+            </tr>
+        </table>
+
+
         </form>
 
-    <div class="card-container" style="display: flex; flex-wrap: wrap;">
+    <div class="card-container" style="display: flex; flex-wrap: wrap; justify-content: center">
        {% for question in questions %}
          <div class="card" style="width: 500px; margin: 10px;">
-          <img class="card-img-top" src="..." alt="Card image cap">
+          <img
+          src="{{ url_for('get_file', filename=question.image_name) }}"
+          class="image"
+        />
               <div class="card-body">
                 <h5 class="card-title"> {{ question.question }}</h5>
                   <div class="card-text" id="cardText{{ loop.index }}">

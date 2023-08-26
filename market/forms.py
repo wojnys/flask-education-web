@@ -35,3 +35,4 @@ class CreateQuestion(FlaskForm):
 
 class CreateTopic(FlaskForm):
     topic = StringField(label='Topic:', validators=[DataRequired()])
+    icon = StringField(label='Icon:', validators=[DataRequired()])

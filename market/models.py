@@ -69,6 +69,10 @@ class Question(db.Model):
     def topic(self):
         return f'#{Topic.query.get(self.topic_id).topic}'
 
+    @property
+    def icon(self):
+        return f'{Topic.query.get(self.topic_id).icon}'
+
     @classmethod
     def save_question(cls, data):
         print(data['quiz_answer'])
@@ -112,13 +116,15 @@ class Answer(db.Model):
 class Topic(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     topic = db.Column(db.String(60), nullable=False)
-
-    # questions = db.relationship('Question', backref='topic')
+    icon = db.Column(db.String(60), nullable=False)
 
     @classmethod
-    def save_topic(cls, topic):
-        new_topic = Topic(topic=topic)
-        db.session.add(new_topic)
+    def save_topic(cls, data):
+        new_data = Topic(
+            topic=data['topic'],
+            icon=data['icon']
+        )
+        db.session.add(new_data)
         db.session.commit()
 
     @classmethod

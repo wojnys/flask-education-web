@@ -19,12 +19,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha512-6lplKUSl86rUVprDIjiW8DuOniNX8UDoRATqZSds/7t6zCQZfaCe3e5zcGaQwxa8Kpn5RTM9Fvl3X2lLV4grPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.css" integrity="sha512-C4k/QrN4udgZnXStNFS5osxdhVECWyhMsK1pnlk+LkC7yJGCqoYxW4mH3/ZXLweODyzolwdWSqmmadudSHMRLA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+/>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/prashantchaudhary/ddslick/master/jquery.ddslick.min.js" ></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/questions.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chosen-multiple-select.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/multi-select-form.css') }}">
+
     <!-- SCSS files -->
     <link rel="stylesheet" href="{{ url_for('static', filename='scss/main.css') }}">
     {% block head %} {% endblock %}
@@ -69,6 +77,9 @@
             <div class="right-side">
                <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('logout_page') }}">Logout</a>
+              </li>
+             <li class="nav-item">
+                <a class="nav-link" href="#">Profile</a>
               </li>
             </div>
         {% else %}

@@ -6,6 +6,9 @@
 
 
 {% block body %}
+    <style>
+
+    </style>
     <div class="container">
         <h1>Create Topic</h1>
         <form method="post" class="w-100">
@@ -16,17 +19,99 @@
                 </div>
             </div>
 
-              {% with messages = get_flashed_messages(with_categories=true) %}
-                  {% if messages %}
-                    {% for category, message in messages %}
-                        <p class="p-1 my-0" style="color:red">{{ message }}</p>
-                        <br>
-                    {% endfor %}
-                  {% endif %}
-              {% endwith %}
+            {{ form.icon.label }}
+            <div id="myDropdown"></div>
+
+            <div class="flash-box-message">
+            </div>
 
                   <input type="submit" class="btn btn-dark my-1" value="Save topic">
         </form>
     </div>
+
+    <script>
+
+//Dropdown plugin data
+var ddData = [
+    {
+        text: "Technical subjects",
+        value: "fas fa-chalkboard-teacher",
+        selected: false,
+        description: "Icon for technical subjects",
+        imageSrc: 'https://www.pngfind.com/pngs/m/88-884704_font-awesome-5-solid-chalkboard-teacher-chalkboard-teacher.png'
+    },
+    {
+        text: "Medicine subjects",
+        value: "fa fa-user-md",
+        selected: false,
+        description: "Icon for medicine subjects",
+        imageSrc: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/User_md_font_awesome.svg/1200px-User_md_font_awesome.svg.png"
+    },
+    {
+        text: "Car subjects",
+        value: "fas fa-car-side",
+        selected: false,
+        description: "Icon for car subjects",
+        imageSrc: "https://www.iconarchive.com/download/i112066/fa-team/fontawesome/FontAwesome-Car-Side.1024.png"
+    },
+    {
+        text: "Math subjects",
+        value: "fas fa-calculator",
+        selected: false,
+        description: "Icon for math subjects",
+        imageSrc: "https://icons.iconarchive.com/icons/fa-team/fontawesome/512/FontAwesome-Calculator-icon.png"
+    },
+     {
+        text: "Something else",
+        value: "fas fa-bars",
+        selected: false,
+        description: "Universal icon",
+        imageSrc: "https://static.thenounproject.com/png/1820829-200.png"
+    },
+];
+
+ $('#myDropdown').ddslick({
+    data:ddData,
+    width:300,
+    selectText: "Select appropriate icon",
+    imagePosition:"right",
+     default:"nic",
+    onSelected: function(selectedData){
+        //select icon
+
+        $(document).ready(function () {
+          $("form").submit(function (event) {
+            var formData = {
+              topic: $("#topic").val(),
+              icon: selectedData.selectedData.value,
+            };
+            if(formData.icon == "") {
+                formData['icon']="fas fa-bars"
+            }
+            console.log(formData.icon)
+            $.ajax({
+              type: "POST",
+              url: "/create/topic",
+              data: formData,
+              dataType: "json",
+              encode: true,
+            }).done(function (data) {
+                var messagesContainer = document.querySelector('.flash-box-message');
+                messagesContainer.innerHTML = ''
+                console.log(data.message)
+                var messageElement = document.createElement('p');
+                messageElement.className = `p-1 my-1 alert alert-${data.type}`; // Add the classes here
+                messageElement.textContent = data.message;
+                messagesContainer.appendChild(messageElement);
+
+            });
+
+            event.preventDefault();
+          });
+        });
+    }
+});
+
+    </script>
 
 {% endblock body %}

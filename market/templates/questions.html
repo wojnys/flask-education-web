@@ -2,12 +2,15 @@
 
 {% block head %}
 <title> Questions </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/card-style.css') }}">
 {% endblock %}
 
 
 {% block body %}
-
-    <h1 class="text-center">All questions here</h1>
+      <div class="title-text">
+            <h1 class="text-center">Materiály a otázky pro všechny studenty</h1>
+            <hr class="divider">
+        </div>
 
     <div class="m-5">
 
@@ -30,65 +33,61 @@
 
         </form>
 
-    <div class="card-container" style="display: flex; flex-wrap: wrap; justify-content: center">
-       {% for question in questions %}
-         <div class="card" style="width: 500px; margin: 10px;">
-          <img
-          src="{{ url_for('get_file', filename=question.image_name) }}"
-          class="image"
-        />
-              <div class="card-body">
-                <h5 class="card-title"> {{ question.question }}</h5>
-                  <div class="card-text" id="cardText{{ loop.index }}">
-                         {{ question.answer | safe }}
-                  </div>
-                <a href="#" class="card-link readMoreLink" id="readMoreLink{{ loop.index }}">Read More</a>
-                <div class="p-2 mb-1 bg-dark text-white rounded small">{{ question.topic }}</div>
-              </div>
-         </div>
-          {% endfor %}
-        </div>
-    </div>
+            <div class="boxes d-flex flex-row justify-content-center gap-3 flex-wrap m-1">
+                {% for question in questions %}
+              <article class="card" style="height: unset" >
+                 <i class='{{ question.icon }}' id="icon-style" ></i>
+                      <div class="card__content | flow " style="height:unset;color:white">
+                        <div class="card__content--container | flow"
+                            style="overflow: hidden; height: 400px;"
+                            id="content{{ loop.index }}"> <!-- Hide rest of the text of article -->
+                         <p><img
+                              style="width:100%"
+                              src="{{ url_for('get_file', filename=question.image_name) }}"/></p>
+                         <h2 class="card__title">{{ question.question }}</h2>
+                          <p class="card__description">
+                            {{ question.answer | safe }}
+                          </p>
+                        </div>
+                            <button class="btn btn-success read-button" id="{{ loop.index }}">Read more</button>
+                           <a class="btn btn-dark">{{ question.topic }}</a>
+                      </div>
+                </article>
+                {% endfor %}
+            </div>
 
 
-    <script>
-        function sendTopic() {
-            document.querySelector("#topic-form").submit()
-        }
+<style>
+    .hide {
+        display: none;
+    }
+</style>
 
-        // Read More/ Less
-          $(document).ready(function() {
-              // Add click event to all read more links
-              $('.readMoreLink').click(function(e) {
-                e.preventDefault();
+{#    <div class="read-test" style="display: flex; justify-content: center">#}
+{#        <section class="post" style="position: relative; height: unset; width:200px; background: red;margin:20px">#}
+{#            <p class="my-content">#}
+{#               jURKOS dsjndjkf hbqwfjhv hefjwehv few fe wfwe fwefefeefef#}
+{#                efefdfhgdferffefefefe#}
+{#                sjndjkf hbqwfjhv hefjwehv few fe wfwe fwefefeefef#}
+{#                efefdfhgdferffefefefe#}
+{#                sjndjkf hbqwfjhv hefjwehv few fe wfwe fwefefeefef#}
+{#                efefdfhgdferffefefefe dodou#}
+{#            </p>#}
+{#            <button onclick="readMore(this)">Read More</button>#}
+{#        </section>#}
+{#        <section class="post" style="position: relative; height: unset; width:200px; background: red; margin:20px">#}
+{#            <p class="my-content">#}
+{#                dsjndjkf hbqwfjhv hefjwehv few fe wfwe fwefefeefef#}
+{#                efefdfhgdferffefefefe#}
+{#                sjndjkf hbqwfjhv hefjwehv few fe wfwe fwefefeefef#}
+{#                efefdfhgdferffefefefe#}
+{#                sjndjkf hbqwfjhv hefjwehv few fe wfwe fwefefeefef#}
+{#                efefdfhgdferffefefefe dodo#}
+{#            </p>#}
+{#            <button onclick="readMore(this)">Read More</button>#}
+{#        </section>#}
+{#    </div>#}
 
-                var cardIndex = $(this).attr('id').replace('readMoreLink', '');
-                var cardText = $('#cardText' + cardIndex);
-
-                // Get the full text content
-                var fullText = cardText.data('fulltext');
-                var truncatedText = cardText.data('truncatedtext');
-
-                // Toggle between full text and truncated text on click
-                if (cardText.text() === truncatedText) {
-                  cardText.text(fullText);
-                  $(this).text('Read Less');
-                } else {
-                  cardText.text(truncatedText);
-                  $(this).text('Read More');
-                }
-              });
-
-              // Truncate text for all cards initially
-              $('.card-text').each(function() {
-                var fullText = $(this).text();
-                var truncatedText = fullText.substr(0, 100) + '...';
-                $(this).data('fulltext', fullText);
-                $(this).data('truncatedtext', truncatedText);
-                $(this).text(truncatedText);
-              });
-            });
-    </script>
 
     <!-- Script -->
     <script type="text/javascript">
@@ -104,12 +103,66 @@
 
         // Send an AJAX request to the Flask server
         $.post('/question', {'topics': selectedValues}, function(response) {
-
+            console.log("hie")
         });
     });
 });
 
+
+// Get all elements with class "read-btn"
+const btnReadLessMoreElements = document.querySelectorAll(".read-button");
+
+// Add click event listener to each element
+btnReadLessMoreElements.forEach(btnElement => {
+    btnElement.addEventListener("click", () => {
+        // Display the content of the clicked element
+        console.log(btnElement)
+        let contentID = "content"+btnElement.getAttribute("id")
+        const CardContentContainer = document.querySelector("#"+contentID);
+        console.log(CardContentContainer)
+        if (btnElement.innerHTML == "Read more") {
+            CardContentContainer.style.height = "unset";
+             btnElement.textContent = "Read less"
+             btnElement.classList.remove("btn-success")
+            btnElement.classList.add("btn-danger")
+        }
+        else {
+             CardContentContainer.style.height = "400px";
+             btnElement.textContent = "Read more"
+            btnElement.classList.remove("btn-danger")
+            btnElement.classList.add("btn-success")
+        }
+
+    });
+});
+
+
+ {#let chars = 70#}
+ {#let contents = document.querySelectorAll(".my-content")#}
+ {#contents.forEach(content => {#}
+ {#    if(content.textContent.length < chars) {#}
+ {#        content.nextElementSibling.style.display = "none"#}
+ {#        console.log(content.textContent.length)#}
+ {#    }#}
+ {#    else {#}
+ {#        let displayText = content.textContent.slice(0,chars)#}
+ {#        let moreText = content.textContent.slice(chars)#}
+ {#        console.log(displayText)#}
+ {#        content.innerHTML = `${displayText} <span class='dots'>...</span><span class='hide more'>${moreText}</span>`#}
+ {#    }#}
+ {#    console.log("hi")#}
+ {#})#}
+ {##}
+ {#function readMore(btn) {#}
+ {#    let post = btn.parentElement#}
+ {#    post.querySelector(".dots").classList.toggle("hide")#}
+ {#    post.querySelector(".more").classList.toggle("hide")#}
+ {#}#}
+
+
     </script>
+
+
 
 
 {% endblock body %}

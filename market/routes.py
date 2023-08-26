@@ -135,12 +135,24 @@ def quiz_end():
 @login_required
 def create_topic():
     form = CreateTopic()
+
     if request.method == 'POST':
-        topic_data = request.form['topic']
-        if Topic.check_same_topic(topic_data) is None:
-            Topic.save_topic(topic_data)
+        topic = request.form.get('topic')
+        icon = request.form.get('icon')
+        if icon == "":
+            icon = "fas fa-bars"
+        data = {
+            'topic': topic,
+            'icon': icon
+        }
+
+        if Topic.check_same_topic(data['topic']) is None:
+            Topic.save_topic(data)
+            return jsonify({"message": "Succesfully created", "type": "primary", "status": "correct"})
+
         else:
-            flash('Topic already exists', 'error')
+            return jsonify({"message": "Topic already exists", "type": "danger", "status": "error"})
+            # flash('Topic already exists', 'error')
 
     return render_template("/admin/add-topic.html", form=form)
 
